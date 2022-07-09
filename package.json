@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "browserify-fs": "^1.0.0",
     "pixi.js": "^6.4.2"
   }
 }
