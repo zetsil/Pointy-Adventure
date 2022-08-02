@@ -5,6 +5,7 @@ export default class Turtle{
         this.pos_y = pos_y;
         this.patrol_start = patrol_start;
         this.patrol_end = patrol_end;
+        this.type = 'balon';
         this.game = game;
         const texture = new PIXI.Texture.from("./assets/turtle.png");
         this.sprite = new PIXI.Sprite(texture);

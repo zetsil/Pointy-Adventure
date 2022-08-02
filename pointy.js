@@ -189,16 +189,7 @@ export default class Pointy {
     this.updateTaile();
     this.animate_jump();
     this.seconds += (1 / 60) * deltaTime;
-    this.game.enemy_list.forEach(element => {
-      if (this.colison_with(element)) {
-        element.destroy();
-        this.doble_jump = true;
-        //  this.vy = 0;
-        //this.game.enemy_list.splice(0,1); 
-      }
-
-    });
-
+   
     this.pos_x += this.vx;
     this.pos_y += this.vy;
     if (this.vy < 7)
@@ -210,8 +201,8 @@ export default class Pointy {
     if (this.vx < 0)
       this.vx += 1;
 
-    if ((this.pos_y + this.h) >= (this.app.view.height - 16)) {
-      this.pos_y = (this.app.view.height - 16 - this.h);
+    if ((this.pos_y + this.h) >= (this.game.tile_height * 16)) {
+      this.pos_y = ((this.game.tile_height * 16)  - this.h);
       this.vy = 0;
       this.on_ground = true;
     } else{
@@ -224,6 +215,22 @@ export default class Pointy {
     this.sprite.x = this.pos_x;
     this.sprite.y = this.pos_y;
     this.check_collision();
+    this.game.enemy_list.forEach(element => {
+      if (this.colison_with(element)) {
+        if(element.type == 'balon')
+        {
+           element.destroy();
+           this.doble_jump = true;
+        }else if(element.type == 'door')
+          element.go_throug();
+        else if(element.type == 'platform')
+          element.collision();          
+        //  this.vy = 0;
+        //this.game.enemy_list.splice(0,1); 
+      }
+
+    });
+
 
 
     if(this.on_ground == false){
@@ -294,14 +301,17 @@ export default class Pointy {
     pos_in_map_x = Math.floor((this.pos_x + this.w / 2) / 16);
     pos_in_map_y = Math.floor((this.pos_y + this.h) / 16);
     this.testColision_down(pos_in_map_x, pos_in_map_y);
-
+for(var i = 1; i<4 ; i++)
+{
     pos_in_map_x = Math.floor((this.pos_x) / 16);
-    pos_in_map_y = Math.floor((this.pos_y + this.h - 16) / 16);
+    pos_in_map_y = Math.floor((this.pos_y + this.h - 16*i) / 16);
     this.testColision_left(pos_in_map_x, pos_in_map_y);
 
     pos_in_map_x = Math.floor((this.pos_x + this.w) / 16);
-    pos_in_map_y = Math.floor((this.pos_y + this.h - 16) / 16);
+    pos_in_map_y = Math.floor((this.pos_y + this.h - 16*i) / 16);
     this.testColision_right(pos_in_map_x, pos_in_map_y);
+  }
+
 
   }
 

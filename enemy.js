@@ -6,6 +6,8 @@ export default class Enemy{
         this.original_pos_x = pos_x;
         this.original_pos_y = pos_y;
 
+        this.type = 'balon';
+
         this.speed = -0.09;
         this.game = game;
         const texture = new PIXI.Texture.from("./assets/ballon_16x16.png");
@@ -14,7 +16,7 @@ export default class Enemy{
         this.sprite.y = this.pos_y;
         this.w = this.sprite.width;
         this.h = this.sprite.height;
-        this.game.container.addChild(this.sprite);
+       // this.game.container.addChild(this.sprite);
         this.destroyed = false;
         this.patrol = 0;
 

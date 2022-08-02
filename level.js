@@ -26,6 +26,11 @@ export default class Level{
       this.entety_list.push(entety);
     }
 
+    setStartPoint(x,y){
+      this.pointy_start_x = x;
+      this.pointy_start_y = y;
+    }
+
     start(){
        // this.game.container.removeChild(  this.game.container.children[0]);
         //this.game.app.stage.removeChild(this.game.app.stage.children[0]);
@@ -34,10 +39,12 @@ export default class Level{
        this.game.current_lvl = this.lvl_number;
        this.game.tile_width = this.Twidth;
        this.game.tile_height =  this.Theight ;
+       this.game.pointy_character.pos_x = this.pointy_start_x;
+       this.game.pointy_character.pos_y = this.pointy_start_y;
 
-       this.entety_list.forEach(element => {
-        this.game.container.addChild(element);
-       });
+
+
+
 
      //  this.game.enemy_list.clear();
        this.game.enemy_list = this.entety_list;
@@ -52,12 +59,19 @@ export default class Level{
         }
          if(this.soundtrack)
          {
+        this.game.levelSoundtrack.pause();  
         this.soundtrack.volume = 0.3;  
         this.game.levelSoundtrack = this.soundtrack;
 
          }
 
-        this.game.background.texture = this.game.loader.resources.lvl2.texture;
+         this.entety_list.forEach(element => {
+          if(element.type == 'balon')
+            this.game.container.addChild(element.sprite);
+         });
+
+
+        this.game.background.texture = this.map_png;
         this.game.container.addChild( this.game.background);
         //txt.texture = this.game.loader.resources.lvl2.texture;
     }

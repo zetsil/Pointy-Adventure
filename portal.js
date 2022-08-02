@@ -4,6 +4,7 @@ export default class Portal{
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.game = game;
+        this.type = 'balon';
         const texture = new PIXI.Texture.from("./assets/portal.png");
         this.sprite = new PIXI.Sprite(texture);
         this.sprite.x = this.pos_x;

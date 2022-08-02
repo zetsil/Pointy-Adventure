@@ -1,10 +1,12 @@
 import Pointy from "./pointy.js";
 import Enemy from "./enemy.js";
-import lvl_1 ,{lvl_2} from "./colision_lvls.js"
+import MovingPlatform from "./movingplatform.js";
+import lvl_1 ,{lvl_2,lvl_3,lvl_4,lvl_5,lvl_6,lvl_7} from "./colision_lvls.js"
 //import lvl_2 from "./colision_lvls.js"
 import Turtle from "./turtle.js";
 import Portal from "./portal.js";
 import Level from "./level.js";
+import Door from "./door.js";
 
 
 var edite_mode = false;
@@ -35,6 +37,7 @@ class Game{
     transparent: false,
     antiallas: true,
 });
+this.app.stage = new PIXI.display.Stage();
 
    this.enemy_list = [];
    this.tile_width = 177;
@@ -48,13 +51,24 @@ class Game{
    this.current_lvl = 0;
    this.levels_colision.push(lvl_1);
    this.levels_colision.push(lvl_2);
+   this.levels_colision.push(lvl_3);
+   this.levels_colision.push(lvl_4);
+   this.levels_colision.push(lvl_5);
+   this.levels_colision.push(lvl_6);
+   this.levels_colision.push(lvl_7);
+
+
+
+
+
+   this.levels_array = [];
    this.levelSoundtrack = new Audio("./assets/High End Party.ogg");
    this.levelSoundtrack .volume = 0.4;
    if(edite_mode)
     this.enter_pressed = document.addEventListener('keypress', e =>{
     if (e.key === 'Enter') {
         let string = '['
-        for(var i =0; i < 40 ;i++){
+        for(var i =0; i < this.tile_height ;i++){
           string += '\n';
           for(var j=0;j<this.tile_width;j++)
              string+= this.levels_colision[this.current_lvl][i*this.tile_width + j] + ',';
@@ -64,9 +78,6 @@ class Game{
 });
 
    this.key = new Keyboard();
-
-
-
 
   }
 
@@ -83,6 +94,14 @@ this.loader.add('lvl','./assets/lvl_2.png')
 .add('trail','assets/trail.png')
 .add('cer','./assets/cer_instelat_bg.png')
 .add('lvl2','./assets/lvl1_map.png')
+.add('lvl3','./assets/lvl3_map.png')
+.add('lvl4','./assets/lvl4_map.png')
+.add('lvl5','./assets/lvl5_map.png')
+.add('lvl6','./assets/lvl6_map.png')
+.add('lvl7','./assets/lvl7_map.png')
+
+
+
 
 
 ;
@@ -101,9 +120,11 @@ setup(loader,resorces){
 
   this.background.interactive = true;
   this.background.buttonMode = true;
-  this.tilling = new PIXI.TilingSprite(resorces.cer.texture,2856,640);
+  this.tilling = new PIXI.TilingSprite(resorces.cer.texture,4000,900);
+
   this.app.stage.addChild(this.tilling);
   this.container.addChild(this.background);
+
 
   this.background.on('pointertap', () => {
    this.mousePosition = this.app.renderer.plugins.interaction.mouse.getLocalPosition(this.background);
@@ -142,6 +163,12 @@ setup(loader,resorces){
 
 
 
+  this.createLVLs();
+  var lvl_2_door = new Door(this,2553,572, this.levels_array[0]);
+
+
+  
+
   this.pointy_character.render(pointy_texture_right);
   if(edite_mode)
     this.drawCollision();
@@ -157,7 +184,18 @@ setup(loader,resorces){
 
 
 
+
+
+
+
+
+
+
+
+
+
   this.turtle1 = new Turtle(19,593,this,16,592);
+  this.platform = new MovingPlatform(19,500,this,16,592)
   this.portal = new Portal(2574,336,this);
   // this.spce_enemy2 = new Enemy(1107,231,this);
   // this.spce_enemy1 = new Enemy(1101,420,this);
@@ -170,17 +208,28 @@ setup(loader,resorces){
   this.enemy_list.push(this.spce_enemy4);
   this.enemy_list.push(this.spce_enemy5);
   this.enemy_list.push(this.spce_enemy6);
+  this.enemy_list.push(lvl_2_door);
+
+
 
 
 
   this.enemy_list.push(this.turtle1);
+  this.enemy_list.push(this.platform);
+
   this.enemy_list.push(this.portal);
 
+  
 
-  var level = new Level(this,lvl_2,0,0,1);
-  level.setTileWH(50,40);
-  level.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
-  level.start();
+
+  this.enemy_list.forEach(element => {
+    if(element.type == 'balon')
+      this.container.addChild(element.sprite);
+   });
+
+   
+
+
 
 
 
@@ -192,28 +241,49 @@ setup(loader,resorces){
 
    if(this.levelSoundtrack.paused)
        this.levelSoundtrack.play();
-   this.enemy_list.forEach(element => { element.update(delta);
+       
+   this.enemy_list.forEach(element => { 
+    if(element.type == 'balon' || element.type == 'platform') 
+       element.update(delta);
+      }
+   );
+
+  if((this.tile_width * 16) > 850)
+  {
+   var camer_pos_y = this.pointy_character.pos_y ;
+   var camers_pos_x = this.pointy_character.pos_x;
+  // console.log(camers_pos_x);
+   if((this.tile_height * 16) < 750)
+     camer_pos_y = 550;
+   else{
+    camer_pos_y = this.pointy_character.pos_y + 100 ;
+     if((this.pointy_character.pos_y  - 550) < 0)
+          camer_pos_y =    550 + 100;
+        
+   }  
+
+   if (this.pointy_character.pos_x < 199 )
+     camers_pos_x = 200;
+   if (this.pointy_character.pos_x > (this.tile_width * 16) - 600 && (this.tile_width * 16) > 800  )
+     camers_pos_x = (this.tile_width * 16 - 600);
+     
 
 
-
-
-    var camer_pos_y = this.pointy_character.pos_y ;
-    var camers_pos_x = this.pointy_character.pos_x;
-   // console.log(camers_pos_x);
-    camer_pos_y = 550;
-    if (this.pointy_character.pos_x < 199 )
-    camers_pos_x = 200;
-    if (this.pointy_character.pos_x > 2250 )
-    camers_pos_x = 2250;
    this.app.stage.pivot.x = camers_pos_x;
    this.tilling.tilePosition.x = camers_pos_x / 4;
    this.app.stage.pivot.y = camer_pos_y;
    this.app.stage.position.x = 200;
-    this.app.stage.position.y = 550;
-  //  this.app.stage.removeChildren();
-    //console.log("helooo");
-    
-   });
+   this.app.stage.position.y = 550;
+
+  }
+  else{
+    this.app.stage.pivot.x = 0;
+    this.app.stage.pivot.y = 0;
+    this.app.stage.position.x = 0;
+    this.app.stage.position.y = 0;
+
+  }
+
 }
 
 drawCollision() // draw current lvl collisions !
@@ -252,6 +322,138 @@ addColision(x,y)// add colision on click
 }
 
 
+createLVLs(){
+
+  var level2 = new Level(this,lvl_2,this.loader.resources.lvl2.texture,0,1,0);
+  level2.setTileWH(50,40);
+  level2.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
+  level2.setStartPoint(150,57);
+
+  var level3 = new Level(this,lvl_3,this.loader.resources.lvl3.texture,0,2,0);
+  level3.setTileWH(50,40);
+  //level2.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
+  level3.setStartPoint(4,395);
+ // level3.start();
+
+ var level4 = new Level(this,lvl_4,this.loader.resources.lvl4.texture,0,3,0);
+ level4.setTileWH(200,40);
+ //level2.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
+ level4.setStartPoint(0,322);
+ var balon_4 = new Enemy(1051,298,this);
+ var balon_4_2 = new Enemy(2635,268,this);
+ var balon_4_3 = new Enemy(1796,244,this);
+
+
+ level4.pushEntety(balon_4);
+ level4.pushEntety(balon_4_2);
+ level4.pushEntety(balon_4_3);
+
+
+ var balon_5 = new Enemy(211,499,this);
+ var balon_5_2 = new Enemy(545,281,this);
+ var balon_5_3 = new Enemy(924,300,this);
+
+
+ var level5 = new Level(this,lvl_5,this.loader.resources.lvl5.texture,0,4,0);
+ level5.setTileWH(79,50);
+ level5.pushEntety(balon_5);
+ level5.pushEntety(balon_5_2);
+ level5.pushEntety(balon_5_3);
+ level5.setStartPoint(0,322);
+
+
+
+
+ var level6 = new Level(this,lvl_6,this.loader.resources.lvl6.texture,0,5,0);
+ level6.setTileWH(50,40);
+ level6.setStartPoint(0,30);
+
+
+ var balon_6 = new Enemy(164,248,this);
+ var balon_6_2 = new Enemy(335,305,this);
+ var balon_6_3 = new Enemy(295,169,this);
+
+ level6.pushEntety(balon_6);
+ level6.pushEntety(balon_6_2);
+ level6.pushEntety(balon_6_3);
+
+
+
+ var level7 = new Level(this,lvl_7,this.loader.resources.lvl7.texture,0,6,0);
+ level7.setTileWH(50,40);
+ level7.setStartPoint(0,-10);
+
+
+ var balon_7 = new Enemy(81,163,this);
+ var balon_7_2 = new Enemy(146,345,this);
+ var balon_7_3 = new Enemy(150,144,this);
+ var balon_7_4 = new Enemy(226,156,this);
+ var balon_7_5 = new Enemy(304,343,this);
+ var balon_7_6 = new Enemy(375,220,this);
+ var balon_7_7 = new Enemy(482,220,this);
+ var balon_7_8 = new Enemy(482,376,this);
+ //level7.start();
+
+
+
+
+
+
+
+
+ level7.pushEntety(balon_7);
+ level7.pushEntety(balon_7_2);
+ level7.pushEntety(balon_7_3);
+ level7.pushEntety(balon_7_4);
+ level7.pushEntety(balon_7_5);
+ level7.pushEntety(balon_7_6);
+ level7.pushEntety(balon_7_7);
+ level7.pushEntety(balon_7_8);
+
+
+
+
+
+
+
+ 
+
+// this.loader.reset();
+
+ //level7.start();
+
+
+
+
+
+
+  var door_lvl_2 = new Door(this,763,462,level3);
+  level2.pushEntety(door_lvl_2);
+
+
+  var door_lvl_3 = new Door(this,757,421,level4);
+  level3.pushEntety(door_lvl_3);
+
+  var door_lvl_4 = new Door(this,3169,283,level5);
+  level4.pushEntety(door_lvl_4);
+
+  var door_lvl_5 = new Door(this,1227,475,level6);
+  level5.pushEntety(door_lvl_5);
+
+  var door_lvl_6 = new Door(this,760,210,level7);
+  level6.pushEntety(door_lvl_6);
+
+  //level6.start();
+
+
+  //level.start();
+  this.levels_array.push(level2);
+  this.levels_array.push(level3);
+
+  
+}
+
+
 }
 
 
@@ -272,6 +474,8 @@ addColision(x,y)// add colision on click
 
 var game = new Game();
 game.start();
+
+
 
 
 
