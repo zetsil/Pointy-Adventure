@@ -46,8 +46,8 @@ export default class Level{
 
 
 
-     //  this.game.enemy_list.clear();
-       this.game.enemy_list = this.entety_list;
+      this.game.enemy_list = [];
+      this.game.enemy_list = this.entety_list;
 
 
         //var sprite = new PIXI.Sprite.from(this.game.loader.resources.lvl2.texture);
@@ -65,14 +65,25 @@ export default class Level{
 
          }
 
+         this.game.background.texture = this.map_png;
+         this.game.container.addChild( this.game.background);
+
          this.entety_list.forEach(element => {
           if(element.type == 'balon')
             this.game.container.addChild(element.sprite);
+          else if(element.type == 'platform')  
+            this.game.container.addChild(element.sprite);
+          else if(element.type == 'proiectil') 
+            this.game.container.addChild(element.sprite);
+          else if(element.type == 'tun')  
+            this.game.container.addChild(element.tunContainer); 
+ 
+  
+
          });
 
 
-        this.game.background.texture = this.map_png;
-        this.game.container.addChild( this.game.background);
+
         //txt.texture = this.game.loader.resources.lvl2.texture;
     }
 

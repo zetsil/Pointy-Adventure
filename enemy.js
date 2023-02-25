@@ -47,8 +47,8 @@ export default class Enemy{
 
       destroy(){
          this.destroyed = true;
-         this.pos_x = -1;
-         this.pos_y = -1;
+         this.pos_x = -40;
+         this.pos_y = -40;
          this.sprite.x = this.pos_x;
          this.sprite.y = this.pos_y;
          setTimeout(() => {this.destroyed = false;this.pos_x = this.original_pos_x;this.pos_y = this.original_pos_y;},5000);

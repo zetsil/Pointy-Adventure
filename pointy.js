@@ -201,10 +201,8 @@ export default class Pointy {
     if (this.vx < 0)
       this.vx += 1;
 
-    if ((this.pos_y + this.h) >= (this.game.tile_height * 16)) {
-      this.pos_y = ((this.game.tile_height * 16)  - this.h);
-      this.vy = 0;
-      this.on_ground = true;
+    if ((this.pos_y + this.h) >= (this.game.tile_height * 20)) {
+      this.game.levels_array[this.game.current_lvl - 1].start();
     } else{
       this.on_ground = false;
     
@@ -401,6 +399,7 @@ for(var i = 1; i<4 ; i++)
     }
   }
 
+  //test colision with object 
   colison_with(object) {
     if (this.pos_x < object.pos_x + object.w &&
       this.pos_x + this.w > object.pos_x &&
@@ -410,10 +409,6 @@ for(var i = 1; i<4 ; i++)
     else {
       return false;
     }
-    //   } else {
-    //       // no collision
-    //       this.color("blue");
-    //}
   }
 
 

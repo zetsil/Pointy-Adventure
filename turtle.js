@@ -20,6 +20,10 @@ export default class Turtle{
 
        }
 
+       setSpeed(s){
+         this.speed = s;
+       }
+
 
        update(deltaTime){
         //  if(this.destroyed)
@@ -29,12 +33,12 @@ export default class Turtle{
          this.sprite.y = this.pos_y;
          if(this.pos_x > this.patrol_end){
             this.pos_x = this.patrol_end - 5;
-            this.speed = -0.5;
+            this.speed *= -1;
             this.sprite.scale.x = 1;
 
          }
          if(this.pos_x <= this.patrol_start){  
-            this.speed = 0.5; 
+            this.speed *= -1; 
             this.sprite.scale.x = -1;
          }
        }
