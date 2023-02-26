@@ -1,7 +1,7 @@
 import Pointy from "./pointy.js";
 import Enemy from "./enemy.js";
 import MovingPlatform from "./movingplatform.js";
-import lvl_1 ,{lvl_2,lvl_3,lvl_4,lvl_5,lvl_6,lvl_7,lvl_8,lvl_9} from "./colision_lvls.js"
+import lvl_1 ,{lvl_2,lvl_3,lvl_4,lvl_5,lvl_6,lvl_7,lvl_8,lvl_9,lvl_10} from "./colision_lvls.js"
 //import lvl_2 from "./colision_lvls.js"
 import Turtle from "./turtle.js";
 import Portal from "./portal.js";
@@ -59,6 +59,8 @@ this.app.stage = new PIXI.display.Stage();
    this.levels_colision.push(lvl_7);
    this.levels_colision.push(lvl_8);
    this.levels_colision.push(lvl_9);
+   this.levels_colision.push(lvl_10);
+
 
 
 
@@ -106,6 +108,7 @@ this.loader.add('lvl','./assets/lvl_2.png')
 .add('lvl7','./assets/lvl7_map.png')
 .add('lvl8','./assets/lvl8_map.png')
 .add('lvl9','./assets/lvl9_map.png')
+.add('lvl10','./assets/lvl10_map.png')
 
 
 
@@ -170,6 +173,7 @@ setup(loader,resorces){
   this.pointy_character.right_animation = pointy_texture_right;
 
 
+  this.createLVLs();
 
 
 
@@ -203,6 +207,7 @@ setup(loader,resorces){
   this.enemy_list.push(this.spce_enemy4);
   this.enemy_list.push(this.spce_enemy5);
   this.enemy_list.push(this.spce_enemy6);
+  var lvl_2_door = new Door(this,2553,572, this.levels_array[0]);
   this.enemy_list.push(lvl_2_door);
 
 
@@ -216,8 +221,6 @@ setup(loader,resorces){
 
   this.enemy_list.push(this.portal);
 
-  this.createLVLs();
-  var lvl_2_door = new Door(this,2553,572, this.levels_array[0]);
 
   
   this.enemy_list.forEach(element => {
@@ -408,10 +411,8 @@ createLVLs(){
  level8.setStartPoint(19,434);
  var level8_platform = new MovingPlatform(300,446,this,16,500);
  var level8_platform_2 = new MovingPlatform(303,242,this,16,600);
-
  level8_platform.setSpeed(4);
  level8_platform_2.setSpeed(4);
-
  level8.pushEntety(level8_platform);
  level8.pushEntety(level8_platform_2);
 
@@ -422,21 +423,33 @@ createLVLs(){
  level9.pushEntety(balon_9_1);
  var tun_9_1 = new Tun(1564,43,this);
  var tun_9_2 = new Tun(500,43,this);
+ var tun_9_3 = new Tun(61,29,this);
+ var tun_9_4 = new Tun(661,512,this);
+
+
 
  level9.pushEntety(tun_9_1);
  level9.pushEntety(tun_9_2);
+ level9.pushEntety(tun_9_3);
+ level9.pushEntety(tun_9_4);
+
+
+ var level10 = new Level(this,lvl_9,this.loader.resources.lvl10.texture,0,9,0);
+ level9.setTileWH(50,40);
+ level9.setStartPoint(27,494);
+ var level10_platform = new MovingPlatform(300,446,this,16,500);
+ var level10_platform_2 = new MovingPlatform(303,242,this,16,600);
+ level10_platform.setSpeed(4);
+ level10_platform_2.setSpeed(4);
+
+ level10.pushEntety(level10_platform);
+ level10.pushEntety(level10_platform_2);
+
+ level10.start();
 
 
 
 
-
-
-
-
-
-
-
- level9.start();
 
   var door_lvl_2 = new Door(this,763,462,level3);
   level2.pushEntety(door_lvl_2);
@@ -457,6 +470,9 @@ createLVLs(){
   var door_lvl_7 = new Door(this,772,415,level8);
   level7.pushEntety(door_lvl_7)
 
+  var door_lvl_8 = new Door(this,772,125,level9);
+  level8.pushEntety(door_lvl_8)
+
 
   //level.start();
   this.levels_array.push(level2);
@@ -467,6 +483,9 @@ createLVLs(){
   this.levels_array.push(level7);
   this.levels_array.push(level8);
   this.levels_array.push(level9);
+
+ // level8.start();
+
 
 
 
