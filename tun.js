@@ -8,6 +8,7 @@ export default class Tun{
         this.pos_x = pos_x;
         this.pos_y = pos_y;
         this.game = game;
+        this.target =  this.game.pointy_character;
         this.type = 'tun';
         this.tunContainer.position.set(pos_x, pos_y);    
         const texture = new PIXI.Texture.from("./assets/tun.png");
@@ -35,11 +36,15 @@ export default class Tun{
         this.sprite.pivot.copyFrom(tip);
 
        }
-
+       setTarget(target)
+       {
+          this.target = target;
+          this.proiectil.target = target;
+       }
 
        update(deltaTime){
-        const dx = this.game.pointy_character.pos_x - this.game.pointy_character.w - this.pos_x ;
-        const dy = this.game.pointy_character.pos_y + this.game.pointy_character.h + 13 - this.pos_y;
+        const dx = this.target.pos_x - this.target.w - this.pos_x ;
+        const dy = this.target.pos_y + this.target.h + 13 - this.pos_y;
         const angle = Math.atan2(dy, dx) ;
         this.sprite.rotation = angle;
         this.proiectil.update();

@@ -69,7 +69,7 @@ export default class Level{
          this.game.container.addChild( this.game.background);
 
          this.entety_list.forEach(element => {
-          if(element.type == 'balon')
+          if(element.type == 'balon' || element.type == 'lever')
             this.game.container.addChild(element.sprite);
           else if(element.type == 'platform')  
             this.game.container.addChild(element.sprite);

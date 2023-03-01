@@ -3,7 +3,7 @@
 colision_string = '['
 for i in range(45):
   colision_string += '\n'
-  for i in range(50):
+  for i in range(70):
    colision_string += '0,'
 colision_string += ']'
 print(colision_string)

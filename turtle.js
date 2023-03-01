@@ -14,7 +14,7 @@ export default class Turtle{
         this.sprite.scale.x = -1;
         this.w = this.sprite.width;
         this.h = this.sprite.height;
-        this.game.container.addChild(this.sprite);
+      //  this.game.container.addChild(this.sprite);
         this.speed = 0.5;
         this.destroyed = false;
 

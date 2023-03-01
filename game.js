@@ -1,14 +1,14 @@
 import Pointy from "./pointy.js";
 import Enemy from "./enemy.js";
 import MovingPlatform from "./movingplatform.js";
-import lvl_1 ,{lvl_2,lvl_3,lvl_4,lvl_5,lvl_6,lvl_7,lvl_8,lvl_9,lvl_10} from "./colision_lvls.js"
+import lvl_1 ,{lvl_2,lvl_3,lvl_4,lvl_5,lvl_6,lvl_7,lvl_8,lvl_9,lvl_10,lvl_11,lvl_12} from "./colision_lvls.js"
 //import lvl_2 from "./colision_lvls.js"
 import Turtle from "./turtle.js";
 import Portal from "./portal.js";
 import Level from "./level.js";
 import Door from "./door.js";
 import Tun from "./tun.js";
-
+import Lever from "./lever.js";
 
 var edite_mode = false;
 
@@ -60,6 +60,10 @@ this.app.stage = new PIXI.display.Stage();
    this.levels_colision.push(lvl_8);
    this.levels_colision.push(lvl_9);
    this.levels_colision.push(lvl_10);
+   this.levels_colision.push(lvl_11);
+   this.levels_colision.push(lvl_12);
+
+
 
 
 
@@ -109,6 +113,10 @@ this.loader.add('lvl','./assets/lvl_2.png')
 .add('lvl8','./assets/lvl8_map.png')
 .add('lvl9','./assets/lvl9_map.png')
 .add('lvl10','./assets/lvl10_map.png')
+.add('lvl11','./assets/lvl11_map.png')
+.add('lvl12','./assets/lvl12_map.png')
+
+
 
 
 
@@ -178,7 +186,6 @@ setup(loader,resorces){
 
 
 
-
   this.pointy_character.render(pointy_texture_right);
   if(edite_mode)
     this.drawCollision();
@@ -215,16 +222,15 @@ setup(loader,resorces){
 
 
   this.enemy_list.push(this.turtle1);
-  this.enemy_list.push(this.platform);
-  this.enemy_list.push(this.platform2);
+  // this.enemy_list.push(this.platform);
+  // this.enemy_list.push(this.platform2);
 
 
   this.enemy_list.push(this.portal);
 
-
   
   this.enemy_list.forEach(element => {
-    if(element.type == 'balon')
+    if(element.type == 'balon' || element.type == "platform")
       this.container.addChild(element.sprite);
     else if(element.type == 'tun')  
       this.container.addChild(element.tunContainer);
@@ -241,7 +247,7 @@ setup(loader,resorces){
   //      this.levelSoundtrack.play();
        
    this.enemy_list.forEach(element => { 
-    if(element.type == 'balon' || element.type == 'platform' || element.type == 'tun') 
+    if(element.type == 'balon' || element.type == 'platform' || element.type == 'tun' || element.type == 'portal' || element.type == "platform") 
        element.update(delta);
       }
 
@@ -330,13 +336,13 @@ createLVLs(){
 
   var level3 = new Level(this,lvl_3,this.loader.resources.lvl3.texture,0,2,0);
   level3.setTileWH(50,40);
-  //level2.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
+  //level3.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
   level3.setStartPoint(4,395);
  // level3.start();
 
  var level4 = new Level(this,lvl_4,this.loader.resources.lvl4.texture,0,3,0);
  level4.setTileWH(200,40);
- //level2.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
+ //level4.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
  level4.setStartPoint(0,322);
  var balon_4 = new Enemy(1051,298,this);
  var balon_4_2 = new Enemy(2635,268,this);
@@ -419,6 +425,7 @@ createLVLs(){
  var level9 = new Level(this,lvl_9,this.loader.resources.lvl9.texture,0,8,0);
  level9.setTileWH(100,40);
  level9.setStartPoint(27,494);
+ //level9.setSoundtrack(new Audio("./assets/Magical Forest.ogg"));
  var balon_9_1 = new Enemy(436,338,this);
  level9.pushEntety(balon_9_1);
  var tun_9_1 = new Tun(1564,43,this);
@@ -428,25 +435,94 @@ createLVLs(){
 
 
 
+
  level9.pushEntety(tun_9_1);
  level9.pushEntety(tun_9_2);
  level9.pushEntety(tun_9_3);
  level9.pushEntety(tun_9_4);
 
 
- var level10 = new Level(this,lvl_9,this.loader.resources.lvl10.texture,0,9,0);
- level9.setTileWH(50,40);
- level9.setStartPoint(27,494);
- var level10_platform = new MovingPlatform(300,446,this,16,500);
- var level10_platform_2 = new MovingPlatform(303,242,this,16,600);
+ var level10 = new Level(this,lvl_10,this.loader.resources.lvl10.texture,0,9,0);
+ level10.setTileWH(50,40);
+ level10.setStartPoint(27,494);
+ var level10_platform = new MovingPlatform(138,599,this,94,500);
+ var level10_platform_2 = new MovingPlatform(385,154,this,16,600);
+ var level10_platform_3 = new MovingPlatform(483,350,this,350,600);
+ var balon_10_1 = new Enemy(764,437,this);
+
+ var level10_tun = new Tun(25,33,this);
+ var level10_tun2 = new Tun(7,11,this);
+ var level10_tun3 = new Tun(7,50,this);
+
+ level10_tun2.setTarget(level10_platform_2);
+ level10_tun.setTarget(level10_platform_3);
+ level10_tun3.setTarget(level10_platform);
+
+
+ level10_tun.proiectil.speed = 7;
+ level10_tun.proiectil.recharge = 150;
+
+ level10_tun2.proiectil.speed = 7;
+ level10_tun2.proiectil.recharge = 156;
+
+ level10_tun3.proiectil.speed = 10;
+ level10_tun3.proiectil.recharge = 123;
+
  level10_platform.setSpeed(4);
  level10_platform_2.setSpeed(4);
+ level10_platform_3.setSpeed(5);
+
 
  level10.pushEntety(level10_platform);
  level10.pushEntety(level10_platform_2);
+ level10.pushEntety(level10_platform_3);
+ level10.pushEntety(level10_tun);
+ level10.pushEntety(balon_10_1);
+ level10.pushEntety(level10_tun2);
+ level10.pushEntety(level10_tun3);
 
- level10.start();
 
+ var level11 = new Level(this,lvl_11,this.loader.resources.lvl11.texture,0,10,0);
+ level11.setTileWH(150,45);
+ level11.setStartPoint(18,24);
+ var balon_11 = new Enemy(392,568,this);
+ var balon_11_3 = new Enemy(150,144,this);
+ var balon_11_4 = new Enemy(843,584,this);
+ var balon_11_5 = new Enemy(943,387,this);
+ var balon_11_6 = new Enemy(1095,250,this);
+ var level11_tun2 = new Tun(1815,515,this);
+
+ level11.pushEntety(balon_11);
+ level11.pushEntety(balon_11_3);
+ level11.pushEntety(balon_11_4);
+ level11.pushEntety(balon_11_4);
+ level11.pushEntety(balon_11_5);
+ level11.pushEntety(level11_tun2);
+ level11.pushEntety(balon_11_6);
+
+
+ var level12 = new Level(this,lvl_12,this.loader.resources.lvl12.texture,0,11,0);
+ level12.setTileWH(70,45);
+ level12.setStartPoint(27,38);
+ var balon_12 = new Enemy(353,207,this);
+ var balon_12_2 = new Enemy(170,132,this);
+ var balon_12_3 = new Enemy(650,475,this);
+ var balon_12_4 = new Enemy(840,460,this);
+ var lever_12 = new Lever(562,98,this);
+
+ var level_12_tun = new Tun(289,65,this);
+ var level_12_tun_2 = new Tun(762,65,this);
+ level12.pushEntety(balon_12);
+ level12.pushEntety(balon_12_2);
+ level12.pushEntety(level_12_tun);
+ level12.pushEntety(level_12_tun_2);
+ level12.pushEntety(balon_12_3);
+ level12.pushEntety(balon_12_4);
+ level12.pushEntety(lever_12);
+
+
+ level_12_tun.setTarget(level_12_tun_2);
+ level_12_tun_2.setTarget(level_12_tun);
 
 
 
@@ -474,6 +550,10 @@ createLVLs(){
   level8.pushEntety(door_lvl_8)
 
 
+  var door_lvl_9 = new Door(this,1565,535,level10);
+  level9.pushEntety(door_lvl_9)
+
+
   //level.start();
   this.levels_array.push(level2);
   this.levels_array.push(level3);
@@ -483,8 +563,16 @@ createLVLs(){
   this.levels_array.push(level7);
   this.levels_array.push(level8);
   this.levels_array.push(level9);
+  this.levels_array.push(level10);
+  this.levels_array.push(level11);
+  this.levels_array.push(level12);
 
- // level8.start();
+
+  level12.start();
+
+
+
+
 
 
 

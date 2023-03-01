@@ -215,7 +215,7 @@ export default class Pointy {
     this.check_collision();
     this.game.enemy_list.forEach(element => {
       if (this.colison_with(element)) {
-        if(element.type == 'balon')
+        if(element.type == 'balon' || element.type == 'lever')
         {
            element.destroy();
            this.doble_jump = true;
@@ -330,7 +330,9 @@ for(var i = 1; i<4 ; i++)
 
 
 
-    } else
+    } else if (this.game.levels_colision[this.game.current_lvl][(x + (y * this.game.tile_width))] == 2) // if you thouch a spike you die s
+         this.game.levels_array[this.game.current_lvl - 1].start();
+      else
       this.on_ground = false;
   }
 
@@ -350,11 +352,10 @@ for(var i = 1; i<4 ; i++)
       this.pos_x = (x + 1) * 16;
       this.vx = 0;
 
-      // this.vy = 0;
-      //this.on_ground = true;
-
-
-
+    }else if (this.game.levels_colision[this.game.current_lvl][(x + (y * this.game.tile_width))] == 2) // if you thouch a spike you die s      
+    if(this.pos_x  < (x*16 - 4))
+    {
+       this.game.levels_array[this.game.current_lvl - 1].start();
     }
   }
 
@@ -373,11 +374,12 @@ for(var i = 1; i<4 ; i++)
       this.pos_x = x * 16 - this.w;
       this.vx = 0;
 
-      // this.vy = 0;
-      //this.on_ground = true;
-
-
-
+    }else if (this.game.levels_colision[this.game.current_lvl][(x + (y * (this.game.tile_width )))] == 2) // if you thouch a spike you die s
+    {
+         if(this.pos_x + this.w > (x*16 + 8))
+         {
+            this.game.levels_array[this.game.current_lvl - 1].start();
+         }
     }
   }
 
@@ -396,7 +398,8 @@ for(var i = 1; i<4 ; i++)
       this.on_ground = false;
       console.log("y:" + y);
 
-    }
+    }else if (this.game.levels_colision[this.game.current_lvl][(x + (y * this.game.tile_width))] == 2) // if you thouch a spike you die s
+            this.game.levels_array[this.game.current_lvl - 1].start();
   }
 
   //test colision with object 
