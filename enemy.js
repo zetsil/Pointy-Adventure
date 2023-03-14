@@ -1,61 +1,97 @@
-export default class Enemy{
+import Projectile from "./projectile.js";
+export default class Enemy extends PIXI.Container {
+    constructor(game,pos_x,pos_y) 
+    {
+      super();
+      this.game = game;
+      this.sprite = new PIXI.Sprite(PIXI.Texture.from('rock_enemy'));
+      this.sprite.anchor.set(0.5);
+      this.x = pos_x ;
+      this.y = pos_y ;
+      this.addChild(this.sprite);
+      game.app.stage.addChild(this);
+      this.speed = 0.2;
 
-    constructor(pos_x,pos_y,game){
-        this.pos_x = pos_x;
-        this.pos_y = pos_y;
-        this.original_pos_x = pos_x;
-        this.original_pos_y = pos_y;
+      this.projectileTimer = 500;
+      this.projectileCooldown = 500;
+      this.projectileSpeed = 3;
+      this.projectileTexture = PIXI.Texture.from('projectile');
+      this.projectileCooldown = 60; // 60 frames between each shot
+      this.projectileTimer = this.projectileCooldown; // start with a full cooldown
+      this.is_enemy_dead = false;
 
-        this.type = 'balon';
+      // Health Bar
+      this.currentHealth= 2;
+      this.totalHealth = 2;
 
-        this.speed = -0.09;
-        this.game = game;
-        const texture = new PIXI.Texture.from("./assets/ballon_16x16.png");
-        this.sprite = new PIXI.Sprite(texture);
-        this.sprite.x = this.pos_x;
-        this.sprite.y = this.pos_y;
-        this.w = this.sprite.width;
-        this.h = this.sprite.height;
-       // this.game.container.addChild(this.sprite);
-        this.destroyed = false;
-        this.patrol = 0;
+      this.healthBarEmpty = new PIXI.Graphics();
+      this.healthBarEmpty.beginFill(0xA0A0A0);
+      this.healthBarEmpty.drawRect(-25, -40, 50, 5);
+      this.healthBarEmpty.endFill();
+      this.addChild(this.healthBarEmpty);
 
-       }
-
-
-       update(deltaTime){
-         if(this.destroyed)
-            return;
-        // this.pos_x += this.speed;
-         this.sprite.x = this.pos_x;
-         this.sprite.y = this.pos_y;
-         this.pos_y -= this.speed ;
-         this.patrol += 1;
-         if(this.patrol > 45)
-         {
-            this.speed = this.speed * -1;
-            this.patrol= 0;
-
-         }
-         // if(this.pos_x > (this.app.view.width - 10))
-         //    this.speed = -2;
-         // if(this.pos_x <= 0)  
-         //    this.speed = 2; 
-       //  console.log("heloo");
-       }
+      this.healthBar = new PIXI.Graphics();
+      this.healthBar.beginFill(0xff0000);
+      this.healthBar.drawRect(-25, -40, 50, 5);
+      this.healthBar.endFill();
+      this.addChild(this.healthBar);
 
 
-      destroy(){
-         this.destroyed = true;
-         this.pos_x = -40;
-         this.pos_y = -40;
-         this.sprite.x = this.pos_x;
-         this.sprite.y = this.pos_y;
-         setTimeout(() => {this.destroyed = false;this.pos_x = this.original_pos_x;this.pos_y = this.original_pos_y;},5000);
+    }
 
-        // this.sprite.destroy();
-      }  
-
-
+    update()
+    {
+      if(this.sprite.texture == null)
+        return
+      const dx =  this.x - this.game.wizard.x;
+      const dy = this.y - this.game.wizard.y;
+      const angle = Math.atan2(dy, dx);
+      this.x -= Math.cos(angle) * this.speed;
+      this.y -= Math.sin(angle) * this.speed;
+      this.projectileTimer--;
+      if (this.projectileTimer <= 0 && !this.is_enemy_dead) {
+        this.projectileTimer = this.projectileCooldown;
+        this.shootProjectile();
+      }
      
+    }
+  
+    shootProjectile() {
+
+        const angle = Math.random() * 2 * Math.PI;
+        const velocity = new PIXI.Point(Math.cos(angle), Math.sin(angle));
+        const projectile = new Projectile(this.projectileTexture, this.projectileSpeed, angle,this);
+        projectile.x = this.x + velocity.x * 50; // spawn the projectile in front of the Enemy
+        projectile.y = this.y + velocity.y * 50;
+        this.game.app.stage.addChild(projectile); // add projectile sprite to stage 
+        this.game.enemy_projectiles.push(projectile); // add the projectile to a list for collision detection
+      }   
+
+    hit()
+    {
+      this.currentHealth--;
+      const healthPercentage = this.getHealthPercentage();
+      this.healthBar.width = healthPercentage / 100 * 100;
+     
+      if(this.currentHealth == 0 ){
+        this.destroy();
+
+      }
+
+    }  
+
+    getHealthPercentage() {
+      return this.currentHealth / this.totalHealth * 50;
+    }
+
+    destroy() {
+        if (this.parent) {
+          this.parent.removeChild(this);
+        }
+        this.speed = null;
+        this.sprite.texture = null;
+        this.x = null;
+        this.y = null;
+        this.is_enemy_dead = true;
+      }  
 }
